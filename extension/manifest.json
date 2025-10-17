@@ -10,14 +10,14 @@
   },
   "browser_action": {
     "default_icon": {
-      "48": "saver48.png"
+      "48": "media/saver48.png"
     },
     "default_popup": "popup.html"
   },
   "icons": {
-    "16": "saver16.png",
-    "48": "saver48.png",
-    "128": "saver128.png"
+    "16": "media/saver16.png",
+    "48": "media/saver48.png",
+    "128": "media/saver128.png"
   },
   "content_scripts": [
     {
