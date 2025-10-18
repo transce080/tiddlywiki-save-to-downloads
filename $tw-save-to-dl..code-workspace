@@ -1,0 +1,25 @@
+{
+  "folders": [
+    {
+      "path": "."
+    }
+  ],
+  "settings": {
+    "eslint.debug": true,
+    "eslint.options": {
+      //"overrideConfigFile": "C:\\Users\\Jason\\eslint.config.mjs"
+    }
+  },
+  "tasks": {
+    "tasks": [
+      {
+        "args": ["start", "-ai", "firefox"],
+        "command": "docker",
+        "label": "Attach to docker container",
+        "type": "shell",
+        "problemMatcher": []
+      }
+    ],
+    "version": "2.0.0"
+  }
+}

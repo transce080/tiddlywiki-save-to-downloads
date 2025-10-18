@@ -1,0 +1,25 @@
+{
+  "author": "Jason Lonsberry",
+  "bugs": {
+    "url": "https://github.com/transce080/tiddlywiki-save-to-downloads/issues"
+  },
+  "description": "A browser extension that allows TiddlyWiki to save directly to the browser's downloads folder.",
+  "devDependencies": {
+    "@eslint/js": "^9.38.0",
+    "@eslint/json": "^0.13.2",
+    "@vscode/test-cli": "^0.0.12",
+    "@vscode/test-electron": "^2.5.2",
+    "eslint": "^9.38.0",
+    "shx": "^0.4.0",
+    "vscode-test": "^1.6.1"
+  },
+  "homepage": "https://github.com/transce080/tiddlywiki-save-to-downloads#readme",
+  "license": "AGPL-3.0-or-later",
+  "main": "extension/contentscript.js",
+  "name": "tiddlywiki-save-to-downloads",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/transce080/tiddlywiki-save-to-downloads.git"
+  },
+  "version": "0.1.0"
+}
