@@ -1,10 +1,12 @@
-document.addEventListener('DOMContentLoaded', function () {
-  document.querySelector('#config').addEventListener('click', function () {
-    window.open(chrome.runtime.getURL("options.html"))
+/* globals chrome */
+'use strict'
+
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelector('#config').addEventListener('click', () => {
+    window.open(chrome.runtime.getURL('options.html'))
   })
 
-  document.querySelector('#about').addEventListener('click', function () {
-    window.open("https://github.com/buggyj/savetiddlers")
+  document.querySelector('#about').addEventListener('click', () => {
+    window.open('https://github.com/buggyj/saveTiddlers')
   })
-
 })
