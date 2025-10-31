@@ -1,6 +1,8 @@
 /* globals browser, chrome */
 'use strict'
 
+console.debug('options.js started')
+
 const SAVE_OPTIONS_TIMEOUT = 750
 const CHECK_TIMEOUT = 2750
 
@@ -37,8 +39,13 @@ let test
 
 chrome.runtime.getPlatformInfo((info) => {
   if (info.os === 'win') {
-    test = (value) => (value.match(illegalRegex) || value.match(ctlRegex)
-      || value.match(rvRegex) || value.match(winRsRegex) || value.match(winTrRegex))
+    test = (value) => (
+      value.match(illegalRegex)
+      || value.match(ctlRegex)
+      || value.match(rvRegex)
+      || value.match(winRsRegex)
+      || value.match(winTrRegex)
+    )
   } else {
     test = (value) => (value.match(unixRe) || value.match(unixDotsRe))
   }

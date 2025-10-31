@@ -5,19 +5,24 @@
     }
   ],
   "settings": {
-    "eslint.debug": true,
-    "eslint.options": {
-      //"overrideConfigFile": "C:\\Users\\Jason\\eslint.config.mjs"
-    }
+    "eslint.format.enable": true,
+    "eslint.onIgnoredFiles": "warn",
+    "eslint.problems.shortenToSingleLine": true,
+    "eslint.useESLintClass": true,
+    "eslint.useFlatConfig": true
   },
   "tasks": {
     "tasks": [
       {
-        "args": ["start", "-ai", "firefox"],
-        "command": "docker",
-        "label": "Attach to docker container",
-        "type": "shell",
-        "problemMatcher": []
+        "args": [
+          "a",
+          "extension.zip",
+          "extension/*"
+        ],
+        "command": "7z",
+        "label": "Bundle for testing",
+        "problemMatcher": [],
+        "type": "shell"
       }
     ],
     "version": "2.0.0"

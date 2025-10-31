@@ -3,9 +3,10 @@
 // The JavaScript in this file is injected into each TiddlyWiki page that loads
 
 (function () {
+  console.debug('script.js: injected script started')
+
   // Returns true if successful, false if failed, null if not available
-  const injectedSaveFile = function (path, content) {
-    // Find the message box element
+  function injectedSaveFile(path, content) {
     const messageBox = document.getElementById('tiddlyfox-message-box')
 
     if (messageBox) {
@@ -14,9 +15,13 @@
       message.setAttribute('data-tiddlyfox-path', path)
       message.setAttribute('data-tiddlyfox-content', content)
       messageBox.appendChild(message)
+
       // Create and dispatch the custom event to the extension
-      const event = document.createEvent('Events')
-      event.initEvent('tiddlyfox-save-file', true, false)
+      const event = new CustomEvent('tiddlyfox-save-file', {
+        bubbles: true,
+        cancelable: false
+      })
+
       message.dispatchEvent(event)
     }
 
@@ -24,11 +29,11 @@
   }
 
   // Returns text if successful, false if failed, null if not available
-  const injectedLoadFile = function (path) {
+  function injectedLoadFile(path) {
     try {
       // Just the read the file synchronously
       const xhReq = new XMLHttpRequest()
-      xhReq.open('GET', `file://${path.charAt(0) == '/' ? '' : '/'}${escape(path)}`, false)
+      xhReq.open('GET', `file://${path.charAt(0) == '/' ? '' : '/'}${encodeURIComponent(path)}`, false)
       xhReq.send(null)
       return xhReq.responseText
     } catch {
@@ -38,11 +43,11 @@
     return false
   }
 
-  const injectedConvertUriToUTF8 = function (path) {
+  function injectedConvertUriToUTF8(path) {
     return path
   }
 
-  const injectedConvertUnicodeToFileFormat = function (s) {
+  function injectedConvertUnicodeToFileFormat(s) {
     return s
   }
 

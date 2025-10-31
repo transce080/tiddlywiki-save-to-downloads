@@ -1,6 +1,8 @@
 /* global chrome */
 'use strict'
 
+console.debug('contentscript.js started')
+
 /*
  * parts of this file is from https://github.com/Jermolene/TiddlyWiki5
  * which is licensed under the BSD format copyright Jermolene Ruston
@@ -21,7 +23,7 @@ let TW5 = true
 
 function currentLocation() {
   // Get the pathname of this document
-  let pathname = window.location.toString().split('#')[0]
+  let [pathname] = window.location.toString().split('#')
 
   // Replace file://localhost/ with file:///
   if (pathname.indexOf('file://localhost/') === 0) {

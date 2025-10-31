@@ -1,6 +1,8 @@
 /* global chrome */
 'use strict'
 
+console.debug('background.js started')
+
 const DATE_LENGTH = 10
 const PATH_TEST_HACK = false //set to true to avoid path test
 const MINUTE_BACKS_HACK = false //set to true to allow backs every minute for testing
@@ -12,64 +14,45 @@ const TEST_FILE = 'This is a test file'
 const probBlob = new Blob([TEST_FILE], { type: 'text/plain' })
 const probBlobUrl = URL.createObjectURL(probBlob)
 
-function datesArray(now, andHours, andMinutes) {
-  const date = [now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()]
-
-  if (andHours) {
-    date.push(now.getUTCHours())
-  }
-  if (andMinutes) {
-    date.push(now.getUTCMinutes())
-  }
-
-  return date
-}
-
-function equalDateArrays(Ar1, Ar2) {
-  if (Ar1.length !== Ar2.length) {
-    return false
-  }
-
-  for (let i = 0; i < Ar1.length; i++) {
-    if (Ar1[i] !== Ar2[i]) return false
-  }
-
-  return true
-}
-
 let os = 'notwin'
 chrome.runtime.getPlatformInfo((info) => { if (info.os == 'win') { $['/'] = '\\'; os = 'win' } })
 
 let testBase//	tiddlywikiLocations+$["/"]+'readTiddlySaverInstruction';
-let round = '59723833' //by rotating this string of digits we can have 8 unique named test files for simultaneous use
-//ie testpath = testbase+round+'.html';rotate(round) for next test file
-const rlen = round.length - 1
+let testNameTemplate = '59723833' //by rotating this string of digits we can have 8 unique named test files for simultaneous use
+//ie testPath = testbase+testNameTemplate+'.html';rotate(testNameTemplate) for next test file
+const testFilename = testNameTemplate.length - 1
 
 chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
-  console.log('background: got request')
+  console.debug('background.js: chrome.runtime.onMessage Event fired')
 
   function performDownload(msg, tiddlywikiLocations) {
     const objUrl = URL.createObjectURL(new Blob([msg.txt], { type: 'text/html' }))
 
-    chrome.downloads.download({
+    const downloadParameters = {
       conflictAction: 'overwrite',
       filename: tiddlywikiLocations + $['/'] + msg.path,
       url: objUrl
-    }, (id) => {
+    }
+
+    chrome.downloads.download(downloadParameters, (id) => {
       chrome.downloads.onChanged.addListener(function hearChange(deltas) {
         // wait for completion
         if (deltas.id == id && deltas.state && deltas.state.current === 'complete') {
           chrome.downloads.onChanged.removeListener(hearChange)
           console.log(`saveTiddlers: saved ${msg.path}`)
+
           URL.revokeObjectURL(objUrl)
-          chrome.storage.local.get({
+
+          const getStorageParameters = {
             backedup: {},
             backupdir: 'backupdir',
             backuptw5: true,
             backuptwc: false,
             period: [],
             periodchoice: 'day'
-          }, (items) => {
+          }
+
+          chrome.storage.local.get(getStorageParameters, (items) => {
             const newValues = {}
             const newdate = new Date()
             const date = datesArray(newdate, items.periodchoice == 'hour', MINUTE_BACKS_HACK)
@@ -154,19 +137,21 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
         performDownload(msg, tiddlywikiLocations)//avoid path testing
       } else {
         // first download check our destination is valid by download a dummy file first and then reading back the filepath
-        round = round[rlen] + round.substring(0, rlen)
+        testNameTemplate = testNameTemplate[testFilename] + testNameTemplate.substring(0, testFilename)
 
-        chrome.downloads.download({
+        const downloadParameters = {
           conflictAction: 'overwrite',
-          filename: `${testBase}${round}.html`,
+          filename: `${testBase}${testNameTemplate}.html`,
           url: probBlobUrl
-        }, (id) => {
+        }
+
+        chrome.downloads.download(downloadParameters, (id) => {
           chrome.downloads.onChanged.addListener(function hearChange(deltas) {
             // wait for completion
             if (deltas.id == id && deltas.state && deltas.state.current === 'complete') {
               chrome.downloads.onChanged.removeListener(hearChange)
               chrome.downloads.search({ id }, (x) => {
-                let bodyX = x[0].filename.split($['/'] + testBase)[0]
+                let [bodyX] = x[0].filename.split($['/'] + testBase)
                 let bodyY = msg.fPath
 
                 if (os === 'win') {//make drive letters the same case
@@ -198,11 +183,13 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
   path = path[path.length - 1]
   const objUrl = URL.createObjectURL(new Blob([msg.txt], { type: 'text/html' }))
 
-  chrome.downloads.download({
+  const downloadParameters = {
     filename: tiddlywikiLocations + $['/'] + path,
     saveAs: true,
     url: objUrl
-  }, (id) => {
+  }
+
+  chrome.downloads.download(downloadParameters, (id) => {
     if (id === undefined) {
       sendResponse({ status: 'cancelled' })
       console.log('background: sent cancelled')
@@ -223,7 +210,7 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
           console.log('background: finishing manual save')
 
           chrome.downloads.search({ id }, (x) => {
-            let bodyX = x[0].filename.split($['/'] + testBase)[0]
+            let [bodyX] = x[0].filename.split($['/'] + testBase)
             let bodyY = msg.filePath
 
             if (os === 'win') {//make drive letters the same case
@@ -252,3 +239,28 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
 
   return true
 })
+
+function datesArray(now, andHours, andMinutes) {
+  const date = [now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()]
+
+  if (andHours) {
+    date.push(now.getUTCHours())
+  }
+  if (andMinutes) {
+    date.push(now.getUTCMinutes())
+  }
+
+  return date
+}
+
+function equalDateArrays(Ar1, Ar2) {
+  if (Ar1.length !== Ar2.length) {
+    return false
+  }
+
+  for (let i = 0; i < Ar1.length; i++) {
+    if (Ar1[i] !== Ar2[i]) return false
+  }
+
+  return true
+}
