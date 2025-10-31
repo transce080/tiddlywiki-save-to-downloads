@@ -7,11 +7,8 @@
   "devDependencies": {
     "@eslint/js": "^9.38.0",
     "@eslint/json": "^0.13.2",
-    "@vscode/test-cli": "^0.0.12",
-    "@vscode/test-electron": "^2.5.2",
     "eslint": "^9.38.0",
-    "shx": "^0.4.0",
-    "vscode-test": "^1.6.1"
+    "shx": "^0.4.0"
   },
   "homepage": "https://github.com/transce080/tiddlywiki-save-to-downloads#readme",
   "license": "AGPL-3.0-or-later",
